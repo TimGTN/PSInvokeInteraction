@@ -561,7 +561,7 @@
                 Write-Host " <$(& $Helpers.TitleCaseStr (& $Helpers.FriendlyType $Def.Type))>"
                 if (-not [string]::IsNullOrEmpty($Def.HelpText)) { Write-Host "        $($Def.HelpText)" }
                 $Lines = $Def.GetEnumerator().Where({$_.Name -notin ('Type','HelpText')}) | 
-                    Sort-Object Name | Select-Object Name, @{n='S';e={':'}}, @{n='V';e={$_.Value}} |
+                    Sort-Object Name | Select-Object Name, @{n='S';e={':'}}, @{n='V';e={if ($_.Value -is [string]) { "`"$($_.Value)`"" } else { $_.Value }}} |
                     Format-Table -AutoSize -HideTableHeaders | Out-String
                 $Lines -split "`r?\n" | Where-Object { $_ -match '\S' } |ForEach-Object {
                     Write-Host "        $_"
