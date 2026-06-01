@@ -64,6 +64,13 @@
         .EXAMPLE
             $Handle = Invoke-Interaction -Type ProgressBar -Message "Processing..." -Minimum 0 -Maximum 100
             1..100 | ForEach-Object { $Handle.Value = $_ ; Start-Sleep -Milliseconds 50 }
+
+        .NOTES
+            Author  : Tim GILLOTIN
+            Contact : @TimGTN
+            Created : 2026-04-30
+            Version : <Version>
+            Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
     param(

@@ -242,11 +242,11 @@ foreach ($Ps1File in (Get-ChildItem $DevInteractionsPs1Dir -Filter '*.ps1')) {
 #
 #  Target shape (Interactions key sits at 12-space indent):
 #
-#      Interactions = @{
-#                  'Prompt' = @{           ← 16 spaces
+#              Interactions = @{
+#                  'Type name' = @{           ← 16 spaces
 #                      Description = "..."  ← 20 spaces (16 + original 4)
 #                      Xaml = @"
-#      <Grid .../>
+#                      <Grid .../>
 #  "@                                       ← col 0  (PowerShell hard requirement)
 #                      Init = { ... }
 #                  }
