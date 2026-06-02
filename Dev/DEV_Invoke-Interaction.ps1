@@ -69,6 +69,7 @@
             Author  : Tim GILLOTIN
             Contact : @TimGTN
             Created : 2026-04-30
+            Updated : <Updated>
             Version : <Version>
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>

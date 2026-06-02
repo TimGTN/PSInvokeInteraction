@@ -12,12 +12,34 @@
     .\Build-InvokeInteraction.ps1 -BuiltinInteractions 'Prompt','Confirm'
 #>
 param(
-    [string[]] $BuiltinInteractions = @("InputText","ItemSelect","MessageAction","ProgressBar","Credential")
+    [string[]] $BuiltinInteractions = @("InputText","ItemSelect","MessageAction","ProgressBar","Credential"),
+    [ValidateSet('Major','Minor')]
+    [string]$Bump = 'Minor'
 )
 
 $ErrorActionPreference = 'Stop'
 
 $ProjectRoot = "$PSScriptRoot\..\"
+
+# ---------------------------------------------------------------------------
+#region Version bump
+# ---------------------------------------------------------------------------
+
+$VersionPath = Join-Path $ProjectRoot 'VERSION'
+$CurrentVersion = if (Test-Path $VersionPath) { (Get-Content $VersionPath -Raw).Trim() } else { '0.0' }
+
+$Parts = $CurrentVersion -split '\.' | ForEach-Object { [int]$_ }
+switch ($Bump) {
+    'Major' { $Parts[0]++; $Parts[1] = 0 }
+    'Minor' { $Parts[1]++ }
+}
+$NewVersion = $Parts -join '.'
+$NewDate    = (Get-Date).ToString('yyyy-MM-dd')
+
+[System.IO.File]::WriteAllText($VersionPath, $NewVersion, [System.Text.Encoding]::UTF8)
+Write-Host "Version : $CurrentVersion → $NewVersion  ($NewDate)"
+
+#endregion
 
 # ---------------------------------------------------------------------------
 #region Helpers
@@ -302,7 +324,9 @@ Write-Host "Builtins embedded: $(if ($BuiltinInteractions) { $BuiltinInteraction
 # ---------------------------------------------------------------------------
 #region 6 - Write function output
 # ---------------------------------------------------------------------------
- 
+
+$Output = $Output -replace '<Version>', $NewVersion
+$Output = $Output -replace '<Updated>', $NewDate
 $OutPath = Join-Path $ProjectRoot 'Invoke-Interaction.ps1'
 [System.IO.File]::WriteAllText($OutPath, $Output, [System.Text.Encoding]::UTF8)
  

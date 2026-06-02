@@ -69,7 +69,8 @@
             Author  : Tim GILLOTIN
             Contact : @TimGTN
             Created : 2026-04-30
-            Version : 1.1.0
+            Updated : 2026-06-02
+            Version : 1.2
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
