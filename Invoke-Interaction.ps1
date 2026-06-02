@@ -70,7 +70,7 @@
             Contact : @TimGTN
             Created : 2026-04-30
             Updated : 2026-06-02
-            Version : 1.2
+            Version : 1.3
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
@@ -917,6 +917,7 @@
                                 $sender.CaretIndex = $sender.Text.Length
                             }
                         }
+                        $Ctx.Sync.SessionParams.CurrentText = $Ctx.Elements.TBX_Input.Text
                         $Ctx.Elements.TBX_Input.Add_TextChanged{
                             param($sender, $e)
                             $sender.DataContext.Sync.SessionParams.CurrentText = $sender.Text
@@ -1157,13 +1158,15 @@
 "@
                     Init = {
                         param($Ctx)
+                        $Ctx.Sync.SessionParams.Value = $Ctx.Elements.PBG_Progress.Value
                         $Ctx.Elements.PBG_Progress.Add_ValueChanged{
                             param($sender, $e)
                             $Ctx = $sender.DataContext
+                            $Ctx.Sync.SessionParams.Value = $sender.Value
                             if ($e.NewValue -ge $sender.Maximum){
                                 $Ctx.Sync.PendingOutput = $null
                             }
-                        }   
+                        }
                     }
                     Update = {
                         param($Ctx)

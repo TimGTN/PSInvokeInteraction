@@ -25,13 +25,15 @@
 "@
     Init = {
         param($Ctx)
+        $Ctx.Sync.SessionParams.Value = $Ctx.Elements.PBG_Progress.Value
         $Ctx.Elements.PBG_Progress.Add_ValueChanged{
             param($sender, $e)
             $Ctx = $sender.DataContext
+            $Ctx.Sync.SessionParams.Value = $sender.Value
             if ($e.NewValue -ge $sender.Maximum){
                 $Ctx.Sync.PendingOutput = $null
             }
-        }   
+        }
     }
     Update = {
         param($Ctx)
