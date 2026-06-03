@@ -1,5 +1,4 @@
-﻿#Requires -Version 5.1
-<#
+﻿<#
 .SYNOPSIS
     Assembles the production Invoke-Interaction.ps1 from the DEV template,
     XAML assets and selected builtin interactions.
@@ -12,34 +11,12 @@
     .\Build-InvokeInteraction.ps1 -BuiltinInteractions 'Prompt','Confirm'
 #>
 param(
-    [string[]] $BuiltinInteractions = @("InputText","ItemSelect","MessageAction","ProgressBar","Credential"),
-    [ValidateSet('Major','Minor')]
-    [string]$Bump = 'Minor'
+    [string[]] $BuiltinInteractions = @("InputText","ItemSelect","MessageAction","ProgressBar","Credential")
 )
 
 $ErrorActionPreference = 'Stop'
 
 $ProjectRoot = "$PSScriptRoot\..\"
-
-# ---------------------------------------------------------------------------
-#region Version bump
-# ---------------------------------------------------------------------------
-
-$VersionPath = Join-Path $ProjectRoot 'VERSION'
-$CurrentVersion = if (Test-Path $VersionPath) { (Get-Content $VersionPath -Raw).Trim() } else { '0.0' }
-
-$Parts = $CurrentVersion -split '\.' | ForEach-Object { [int]$_ }
-switch ($Bump) {
-    'Major' { $Parts[0]++; $Parts[1] = 0 }
-    'Minor' { $Parts[1]++ }
-}
-$NewVersion = $Parts -join '.'
-$NewDate    = (Get-Date).ToString('yyyy-MM-dd')
-
-[System.IO.File]::WriteAllText($VersionPath, $NewVersion, [System.Text.Encoding]::UTF8)
-Write-Host "Version : $CurrentVersion → $NewVersion  ($NewDate)"
-
-#endregion
 
 # ---------------------------------------------------------------------------
 #region Helpers
@@ -320,13 +297,44 @@ $Output = Set-Placeholder -Text $Output -Name 'BUILTIN_INTERACTIONS' -Value $Int
 Write-Host "Builtins embedded: $(if ($BuiltinInteractions) { $BuiltinInteractions -join ', ' } else { '(none)' })"
  
 #endregion
- 
+
 # ---------------------------------------------------------------------------
-#region 6 - Write function output
+#region 6 - Version bump (interactive confirmation)
 # ---------------------------------------------------------------------------
 
-$Output = $Output -replace '<Version>', $NewVersion
-$Output = $Output -replace '<Updated>', $NewDate
+$VersionPath = Join-Path $ProjectRoot 'VERSION'
+$CurrentVersion = if (Test-Path $VersionPath) { (Get-Content $VersionPath -Raw).Trim() } else { '0.0' }
+
+if (-not (Get-Command Invoke-Interaction -ErrorAction SilentlyContinue)) {
+    . "$(Join-Path $ProjectRoot 'Invoke-Interaction.ps1')"
+}
+$Bump = Invoke-Interaction -Type MessageAction -Title "Confirmation" -Message "Version bump ? (current : $CurrentVersion)" `
+    -Buttons "Minor","Major","None"
+
+$Parts = $CurrentVersion -split '\.' | ForEach-Object { [int]$_ }
+if ($Bump -in "Major","Minor") {
+    switch ($Bump) {
+        'Major' { $Parts[0]++; $Parts[1] = 0 }
+        'Minor' { $Parts[1]++ }
+    }
+    $Version = $Parts -join '.'
+    $Date = [datetime]::Now.ToString('yyyy-MM-dd')
+} else {
+    $Version = $CurrentVersion
+    $Date = (Get-Item $VersionPath | Select-Object -ExpandProperty LastWriteTime).ToString('yyyy-MM-dd')
+}
+
+$Output = $Output -replace '<Version>', $Version
+$Output = $Output -replace '<Updated>', $Date
+
+[System.IO.File]::WriteAllText($VersionPath, $Version, [System.Text.Encoding]::UTF8)
+
+#endregion
+
+# ---------------------------------------------------------------------------
+#region 7 - Write function output
+# ---------------------------------------------------------------------------
+
 $OutPath = Join-Path $ProjectRoot 'Invoke-Interaction.ps1'
 [System.IO.File]::WriteAllText($OutPath, $Output, [System.Text.Encoding]::UTF8)
  
