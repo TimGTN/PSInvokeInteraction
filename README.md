@@ -58,7 +58,7 @@ These apply to all interaction types and control the window frame:
 | `-Title` | `string` | Window header text |
 | `-Description` | `string` | Secondary text displayed above the interaction |
 | `-IconPreset` | `string` | Preset icon: `Default`, `Information`, `Warning`, `Help`, `Error`, `Success` |
-| `-IconBrush` | `string` | Custom WPF brush XAML string (e.g. DrawingBrush, VisualBrush...), overrides `-IconPreset` — [see example](#custom-icon) |
+| `-IconBrush` | `string` | Custom WPF brush XAML, overrides `-IconPreset` — [see example](#custom-icon) |
 | `-NoCancel` | `switch` | Disables the close button and cancel actions |
  
 ## Async Mode & Handles
