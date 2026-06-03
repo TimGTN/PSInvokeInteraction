@@ -69,8 +69,8 @@
             Author  : Tim GILLOTIN
             Contact : @TimGTN
             Created : 2026-04-30
-            Updated : 2026-06-02
-            Version : 1.3
+            Updated : 2026-06-03
+            Version : 1.4
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
@@ -2008,7 +2008,7 @@
         $PSO.Methods.Add([System.Management.Automation.PSScriptMethod]::new(
             'Show', {
                 $this.AssertLive() | Out-Null
-                Invoke-Interaction -Type $this.InteractionType -Async | Out-Null
+                Invoke-Interaction -Type $this.InteractionType -Async -InstanceID $this.InstanceID | Out-Null
             }))
         # Push a single param change without changing current window visibility.
         $PSO.Methods.Add([System.Management.Automation.PSScriptMethod]::new(
@@ -2016,7 +2016,7 @@
                 param([string]$Name, [object]$Value)
                 $this.AssertLive() | Out-Null
                 $Param = @{ $Name = $Value }
-                Invoke-Interaction -Type $this.InteractionType @Param -Async -Show $false | Out-Null
+                Invoke-Interaction -Type $this.InteractionType @Param -Async -Show $false -InstanceID $this.InstanceID | Out-Null
             }))
         # Block until the user produces output (or dismisses)
         $PSO.Methods.Add([System.Management.Automation.PSScriptMethod]::new(
