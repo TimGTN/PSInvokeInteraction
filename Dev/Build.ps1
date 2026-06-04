@@ -11,7 +11,7 @@
     .\Build-InvokeInteraction.ps1 -BuiltinInteractions 'Prompt','Confirm'
 #>
 param(
-    [string[]] $BuiltinInteractions = @("InputText","ItemSelect","MessageAction","ProgressBar","Credential")
+    [string[]] $BuiltinInteractions = @("InputText","ItemSelect","MessageBox","ProgressBar","Credential")
 )
 
 $ErrorActionPreference = 'Stop'
@@ -308,7 +308,7 @@ $CurrentVersion = if (Test-Path $VersionPath) { (Get-Content $VersionPath -Raw).
 if (-not (Get-Command Invoke-Interaction -ErrorAction SilentlyContinue)) {
     . "$(Join-Path $ProjectRoot 'Invoke-Interaction.ps1')"
 }
-$Bump = Invoke-Interaction -Type MessageAction -Title "Confirmation" -Message "Version bump ? (current : $CurrentVersion)" `
+$Bump = Invoke-Interaction -Type MessageBox -Title "Confirmation" -Message "Version bump ? (current : $CurrentVersion)" `
     -Buttons "Minor","Major","None"
 
 $Parts = $CurrentVersion -split '\.' | ForEach-Object { [int]$_ }

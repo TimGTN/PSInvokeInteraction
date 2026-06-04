@@ -69,8 +69,8 @@
             Author  : Tim GILLOTIN
             Contact : @TimGTN
             Created : 2026-04-30
-            Updated : 2026-06-03
-            Version : 1.4
+            Updated : 2026-06-04
+            Version : 1.5
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
@@ -1044,8 +1044,8 @@
                     }
                 }
 
-                'MessageAction' = @{
-                    Name = "MessageAction"
+                'MessageBox' = @{
+                    Name = "MessageBox"
                     Description = "Configurable message box with custom buttons and status icon."
                     Parameters  = @{
                         Message     = @{ Type=[string]; Default=$null

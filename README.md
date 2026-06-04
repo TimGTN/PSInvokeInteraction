@@ -38,14 +38,14 @@ $Name = Invoke-Interaction -Type InputText -Title "Rename" -Placeholder "Enter a
 $Choices = Invoke-Interaction -Type ItemSelect -Title "Select items" -Items "A","B","C" -Multiple
  
 # Simple message box
-$Button = Invoke-Interaction -Type MessageAction -Title "Confirm" -Message "Proceed?" -Buttons "Yes","No"
+$Button = Invoke-Interaction -Type MessageBox -Title "Confirm" -Message "Proceed?" -Buttons "Yes","No"
  
 # And more... Use -Help to explore all available types and parameters
 ```
 
 ## Built-in Interaction Types
  
-Five types are included out of the box: `InputText`, `ItemSelect`, `MessageAction`, `ProgressBar`, and `Credential`. Each one is fully documented directly in the source - use the built-in help system to explore them from your terminal (see [Help](#help) below).
+Five types are included out of the box: `InputText`, `ItemSelect`, `MessageBox`, `ProgressBar`, and `Credential`. Each one is fully documented directly in the source - use the built-in help system to explore them from your terminal (see [Help](#help) below).
 
 Additional interactions are available in the repository. You can use them by either registering them at runtime via [`-CustomInteraction`](#custom-interactions), or by adding them directly into the function's `Interactions` block for permanent availability.
 
@@ -118,11 +118,11 @@ PARAMETERS
     -Type <String>
         Interaction type to display.
  
-        Credential    - Secure credential prompt returning a standard PSCredential object.
-        InputText     - Simple text input dialog with customization options.
-        ItemSelect    - Item selection list supporting both single and multiple selection modes.
-        MessageAction - Configurable message box with custom buttons and status icon.
-        ProgressBar   - Configurable asynchronous progress bar.
+        Credential  - Secure credential prompt returning a standard PSCredential object.
+        InputText   - Simple text input dialog with customization options.
+        ItemSelect  - Item selection list supporting both single and multiple selection modes.
+        MessageBox  - Configurable message box with custom buttons and status icon.
+        ProgressBar - Configurable asynchronous progress bar.
     ...
 ```
  
@@ -175,20 +175,20 @@ $CustomHeartIcon = @'
 </DrawingBrush>
 '@
 
-Invoke-Interaction -Type MessageAction -Title "Custom Icon" -Message "Look at this heart!" `
+Invoke-Interaction -Type MessageBox -Title "Custom Icon" -Message "Look at this heart!" `
     -MessageIcon "Inherit" -IconBrush $CustomHeartIcon
 ```
 You can also set it as default across all calls using `$PSDefaultParameterValues`:
 ```powershell
 $PSDefaultParameterValues["Invoke-Interaction:IconBrush"] = $CustomHeartIcon
 
-Invoke-Interaction -Type MessageAction -Title "Custom Icon" -Message "Look at this heart!" -MessageIcon "Inherit"
+Invoke-Interaction -Type MessageBox -Title "Custom Icon" -Message "Look at this heart!" -MessageIcon "Inherit"
 ```
  
 ### Confirmation with a timeout (Async)
  
 ```powershell
-$Handle = Invoke-Interaction -Type MessageAction -Title "Confirmation" -IconPreset Warning `
+$Handle = Invoke-Interaction -Type MessageBox -Title "Confirmation" -IconPreset Warning `
     -Async -MessageIcon "Inherit" -Buttons "Yes","No" -Message "Confirm deletion?" -NoCancel
  
 # Simple 5 seconds timeout
