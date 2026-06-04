@@ -279,7 +279,7 @@ $InteractionEntries = foreach ($InteractionName in $BuiltinInteractions) {
     $BodyLines  = if ($Lines.Count -gt 2) { $Lines[1..($Lines.Count - 2)] } else { @() }
  
     $IndentedBody = ($BodyLines | ForEach-Object {
-        if ($_ -match '^"@') { $_ }   # here-string closing delimiter → must stay at col 0
+        if ($_ -match "^[`"']@") { $_ }   # here-string closing delimiter → must stay at col 0
         else                 { "$EntryIndent$_" }
     }) -join "`n"
  
