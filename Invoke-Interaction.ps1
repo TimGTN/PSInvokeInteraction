@@ -70,7 +70,7 @@
             Contact : @TimGTN
             Created : 2026-04-30
             Updated : 2026-06-04
-            Version : 1.5
+            Version : 1.6
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
@@ -802,10 +802,21 @@
                     }
                     return $Out
                 }
-
+                
                 TitleCaseStr = {
                     param([string]$S)
                     [cultureinfo]::CurrentCulture.TextInfo.ToTitleCase($S.ToLower())
+                }
+
+                ReindentText = {
+                    param([string]$Text, [int]$Indent = 8)
+                    $Lines = $Text -split "`r?\n" | Where-Object { $_ -match '\S' }
+                    if (-not $Lines) { return }
+                    $Padding = ' ' * $Indent
+                    $MinIndent = ($Lines | ForEach-Object { 
+                        if ($_ -match '^(\s+)') { $Matches[1].Length } else { 0 }
+                    } | Measure-Object -Minimum).Minimum
+                    $Lines | ForEach-Object { "$Padding$($_.Substring([Math]::Min($MinIndent, $_.Length)))" }
                 }
 
                 FriendlyType = {
@@ -1051,9 +1062,11 @@
                         Message     = @{ Type=[string]; Default=$null
                                          HelpText="Text content displayed inside the message box." }
                         MessageIcon = @{ Type=[string]; Default="Information"
-                                         HelpText="Sets the status icon. Valid values: 'Inherit' (same as window), 
-                                         a preset name ('Default','Warning','Information','Help','Error','Success'), 
-                                         a custom WPF brush (like -IconBrush), or $null to collapse the icon." }
+                                         HelpText=@'
+                                            Sets the status icon. Valid values: 'Inherit' (same as window), 
+                                            a preset name ('Default','Warning','Information','Help','Error','Success'), 
+                                            a custom WPF brush (like -IconBrush), or $null to collapse the icon." 
+                '@ }
                         Buttons     = @{ Type=[string[]]; Default="Ok","Cancel"
                                          HelpText="Custom buttons generated right-to-left. First one gets primary styling." }
                     }
@@ -1463,7 +1476,7 @@
                 $Def = $_.Value
                 Write-Host "    -$($_.Key)" -ForegroundColor $HighlightColor -NoNewline
                 Write-Host " <$(& $Helpers.TitleCaseStr (& $Helpers.FriendlyType $Def.Type))>"
-                if (-not [string]::IsNullOrEmpty($Def.HelpText)) { Write-Host "        $($Def.HelpText)" }
+                if (-not [string]::IsNullOrEmpty($Def.HelpText)) { & $Helpers.ReindentText $Def.HelpText | Write-Host }
                 $Lines = $Def.GetEnumerator().Where({$_.Name -notin ('Type','HelpText')}) | 
                     Sort-Object Name | Select-Object Name, @{n='S';e={':'}}, @{n='V';e={if ($_.Value -is [string]) { "`"$($_.Value)`"" } else { $_.Value }}} |
                     Format-Table -AutoSize -HideTableHeaders | Out-String
@@ -1472,6 +1485,12 @@
                 }
                 Write-Host
             }
+
+        # EXAMPLE
+        if ($Interaction.ContainsKey('Example')) {
+            Write-Host "EXAMPLE"
+            if (-not [string]::IsNullOrEmpty($Interaction.Example)) { & $Helpers.ReindentText $Interaction.Example 4 | Write-Host}
+        }
         return
     }
     #endregion

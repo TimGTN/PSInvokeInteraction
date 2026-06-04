@@ -1,7 +1,7 @@
 ﻿@{
     Name = "PieChart"
     Description = "Pie chart rendered from a named numeric dataset, with optional unit suffix."
-    Example = @"
+    Example = @'
         # Live pie chart updated as data accumulates
         $Handle = Invoke-Interaction -Type PieChart -Datas $null -Async
         $Datas = @{}
@@ -11,12 +11,12 @@
             $Datas[$Key] = $Value + 1
             $Handle.Datas = $Datas
         }
-"@
+'@
     Parameters  = @{
         Datas = @{ Type=[hashtable]; Default=@{'Data 1'=5; 'Data 2'=10}
-            HelpText="Hashtable of named numeric values to display as pie slices. Format: @{ 'Label' = Value }." }
-        Unit = @{ Type=[string];
-            HelpText="Optional unit suffix appended to each slice label (e.g. 'GB', 'ms', '%')." }
+                   HelpText="Hashtable of named numeric values to display as pie slices. Format: @{ 'Label' = Value }." }
+        Unit  = @{ Type=[string];
+                   HelpText="Optional unit suffix appended to each slice label (e.g. 'GB', 'ms', '%')." }
     }
     Xaml = #INTERACTION_VISUAL
     '' # AUTOMATICALLY INJECTED BY DEV FUNCTION or BUILD

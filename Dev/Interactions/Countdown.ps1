@@ -3,11 +3,11 @@
     Description = "Displays a countdown timer from a given TimeSpan, closing automatically on completion."
     Parameters  = @{
         Duration = @{ Type=[timespan]; Nullable=$false; InitOnly=$true
-            HelpText="Total duration of the countdown. Required." }
+                      HelpText="Total duration of the countdown. Required." }
         Message  = @{ Type=[string]; 
-            HelpText="Status message displayed above the countdown." }
+                      HelpText="Status message displayed above the countdown." }
         Color    = @{ Type=[string]; Default="#49adf4"
-            HelpText="Progress fill color. Supports Hex codes or WPF literal names." }
+                      HelpText="Progress fill color. Supports Hex codes or WPF literal names." }
         # Implicit async (function-level parameter)
         Async    = @{ Type=[switch]; Default=$true; HelpText=$false }
     }

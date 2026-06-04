@@ -5,9 +5,11 @@
         Message     = @{ Type=[string]; Default=$null
                          HelpText="Text content displayed inside the message box." }
         MessageIcon = @{ Type=[string]; Default="Information"
-                         HelpText="Sets the status icon. Valid values: 'Inherit' (same as window), 
-                         a preset name ('Default','Warning','Information','Help','Error','Success'), 
-                         a custom WPF brush (like -IconBrush), or $null to collapse the icon." }
+                         HelpText=@'
+                            Sets the status icon. Valid values: 'Inherit' (same as window), 
+                            a preset name ('Default','Warning','Information','Help','Error','Success'), 
+                            a custom WPF brush (like -IconBrush), or $null to collapse the icon." 
+'@ }
         Buttons     = @{ Type=[string[]]; Default="Ok","Cancel"
                          HelpText="Custom buttons generated right-to-left. First one gets primary styling." }
     }

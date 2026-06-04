@@ -251,10 +251,21 @@
                     }
                     return $Out
                 }
-
+                
                 TitleCaseStr = {
                     param([string]$S)
                     [cultureinfo]::CurrentCulture.TextInfo.ToTitleCase($S.ToLower())
+                }
+
+                ReindentText = {
+                    param([string]$Text, [int]$Indent = 8)
+                    $Lines = $Text -split "`r?\n" | Where-Object { $_ -match '\S' }
+                    if (-not $Lines) { return }
+                    $Padding = ' ' * $Indent
+                    $MinIndent = ($Lines | ForEach-Object { 
+                        if ($_ -match '^(\s+)') { $Matches[1].Length } else { 0 }
+                    } | Measure-Object -Minimum).Minimum
+                    $Lines | ForEach-Object { "$Padding$($_.Substring([Math]::Min($MinIndent, $_.Length)))" }
                 }
 
                 FriendlyType = {
@@ -567,7 +578,7 @@
                 $Def = $_.Value
                 Write-Host "    -$($_.Key)" -ForegroundColor $HighlightColor -NoNewline
                 Write-Host " <$(& $Helpers.TitleCaseStr (& $Helpers.FriendlyType $Def.Type))>"
-                if (-not [string]::IsNullOrEmpty($Def.HelpText)) { Write-Host "        $($Def.HelpText)" }
+                if (-not [string]::IsNullOrEmpty($Def.HelpText)) { & $Helpers.ReindentText $Def.HelpText | Write-Host }
                 $Lines = $Def.GetEnumerator().Where({$_.Name -notin ('Type','HelpText')}) | 
                     Sort-Object Name | Select-Object Name, @{n='S';e={':'}}, @{n='V';e={if ($_.Value -is [string]) { "`"$($_.Value)`"" } else { $_.Value }}} |
                     Format-Table -AutoSize -HideTableHeaders | Out-String
@@ -576,6 +587,12 @@
                 }
                 Write-Host
             }
+
+        # EXAMPLE
+        if ($Interaction.ContainsKey('Example')) {
+            Write-Host "EXAMPLE"
+            if (-not [string]::IsNullOrEmpty($Interaction.Example)) { & $Helpers.ReindentText $Interaction.Example 4 | Write-Host}
+        }
         return
     }
     #endregion
