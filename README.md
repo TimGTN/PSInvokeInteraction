@@ -231,7 +231,11 @@ The `Init` scriptblock runs **once** when the interaction is first loaded. This 
 ### Update
  
 The `Update` scriptblock runs on every call (init and parameter updates via handle). Its role is to reflect the current parameter values onto the UI. It should stay focused on visual updates and avoid embedding business logic.
- 
+
+### Dispose
+
+The `Dispose` scriptblock (optional) runs automatically when the interaction is replaced by another one (or reinitialized via `-Force`). Use it to clean up any resources created in `Init` that would otherwise keep running in the background - timers, event subscriptions, threads, etc.
+
 ---
  
 ```powershell
@@ -257,6 +261,11 @@ $MyInteraction = @{
         param($Ctx)
         # Runs on every call - keep this visual only
         $Ctx.Elements.TBK_Label.Text = $Ctx.Params.LabelText
+    }
+    Dispose = {
+        param($Ctx)
+        # Runs when the interaction is replaced or reinitialized via -Force
+        # Clean up any persistent resources created in Init (timers, subscriptions, etc.)
     }
 }
  

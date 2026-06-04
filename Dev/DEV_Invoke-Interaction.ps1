@@ -703,6 +703,14 @@
                 if (-not $Pending.Load -and $null -ne $Sync.UI_Interaction.Content) { return }
                 $Interaction = $Pending.Interaction
 
+                # Clean up the outgoing interaction using the current DataContext,
+                # which holds the exact interaction definition that is currently running.
+                $PrevCtx = $Sync.UI_Window.DataContext
+                if ($null -ne $PrevCtx -and $PrevCtx.Interaction.ContainsKey('Dispose')) {
+                    try { ([scriptblock]::Create($PrevCtx.Interaction.Dispose.ToString())).Invoke($PrevCtx) }
+                    catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'DisposeInteraction' ; Terminating = $false ; Displayed = $false }) }
+                }
+
                 $Sync.UI_Interaction.Content = $null
                 $Sync.UI_Window.DataContext  = $null
 
