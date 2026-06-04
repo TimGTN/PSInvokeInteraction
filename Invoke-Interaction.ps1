@@ -1858,7 +1858,7 @@
     $Errors = [System.Collections.Generic.List[string]]::new()
 
     # Exclude init only parameters if the interaction is already alive
-    if ($IsSameInteraction -and -not $Force.IsPresent) {
+    if ($IsSameInteraction -and -not $Force.IsPresent -and $IsPersisted) {
         foreach ($Key in @($Params.Keys)) {
             $Def = $Interaction.Parameters[$Key]
             if ($Def -and $Def.InitOnly -and $DynResolved.ContainsKey($Key)) {
