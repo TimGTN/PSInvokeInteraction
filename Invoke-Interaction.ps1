@@ -69,8 +69,8 @@
             Author  : Tim GILLOTIN
             Contact : @TimGTN
             Created : 2026-04-30
-            Updated : 2026-06-04
-            Version : 1.6
+            Updated : 2026-06-05
+            Version : 1.7
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
@@ -110,6 +110,9 @@
             <ResourceDictionary></ResourceDictionary>
         </Window.Resources>
         <Border MinWidth="200" MinHeight="100" Background="{DynamicResource Layout.Surface}" CornerRadius="4" Margin="24" BorderThickness="1" BorderBrush="{DynamicResource Layout.Surface.Alt}">
+            <Border.CacheMode>
+                <BitmapCache EnableClearType="False" RenderAtScale="1" SnapsToDevicePixels="False" />
+            </Border.CacheMode>
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="Gray" Opacity="0.4" />
             </Border.Effect>
