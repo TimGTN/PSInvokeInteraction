@@ -52,7 +52,7 @@
         }
         $Ctx.Elements.TBX_UserName.Add_TextChanged{
             param($sender, $e)
-            $sender.DataContext.Sync.SessionParams.UsernameCurrentText = $sender.Text
+            $Sync.SessionParams.UsernameCurrentText = $sender.Text
         }
         $Ctx.Elements.PBX_Password.Add_PreviewKeyDown{
             if ($_.Key -eq "Enter"){

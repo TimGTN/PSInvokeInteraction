@@ -41,10 +41,9 @@
                 $sender.CaretIndex = $sender.Text.Length
             }
         }
-        $Ctx.Sync.SessionParams.CurrentText = $Ctx.Elements.TBX_Input.Text
         $Ctx.Elements.TBX_Input.Add_TextChanged{
             param($sender, $e)
-            $sender.DataContext.Sync.SessionParams.CurrentText = $sender.Text
+            $Sync.SessionParams.CurrentText = $sender.Text     
         }
     }
     Update = {
