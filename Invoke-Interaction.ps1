@@ -1437,7 +1437,10 @@
         if ($BuiltIn) { $Msg += "`nBuilt-in : $BuiltIn" }
         if ($Custom)  { $Msg += "`nCustom   : $Custom" }
         throw $Msg
-    } else { $Interaction  = $Sync.Config.Interactions[$Type] }
+    } else { 
+        $Interaction  = $Sync.Config.Interactions[$Type] 
+        $Type = $Interaction.Name
+    }
 
     # -Type <name> -Help : Specified interaction type help
     if ($Help.IsPresent) {
@@ -1624,7 +1627,7 @@
                 # which holds the exact interaction definition that is currently running.
                 $PrevCtx = $Sync.UI_Window.DataContext
                 if ($null -ne $PrevCtx -and $PrevCtx.Interaction.ContainsKey('Dispose')) {
-                    try { ([scriptblock]::Create($PrevCtx.Interaction.Dispose.ToString())).Invoke($PrevCtx) }
+                    try { & ([scriptblock]::Create($PrevCtx.Interaction.Dispose.ToString())) $PrevCtx }
                     catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'DisposeInteraction' ; Terminating = $false ; Displayed = $false }) }
                 }
 
@@ -1688,7 +1691,7 @@
                 $Mod = if ($null -ne $Pending.Interaction) { $Pending.Interaction }
                        else { $Sync.Config.Interactions[$Sync.CurrentType] }
                 if ($null -ne $Mod -and $Mod.ContainsKey('Update')) {
-                    ([scriptblock]::Create($Mod['Update'].ToString())).Invoke($Ctx)
+                    & ([scriptblock]::Create($Mod['Update'].ToString())) $Ctx
                 }
             }
 
