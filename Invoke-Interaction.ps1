@@ -69,8 +69,8 @@
             Author  : Tim GILLOTIN
             Contact : @TimGTN
             Created : 2026-04-30
-            Updated : 2026-06-05
-            Version : 1.7
+            Updated : 2026-06-07
+            Version : 1.8
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
@@ -1914,6 +1914,26 @@
         elseif ($null -eq $Params[$Key] -and $Def.Nullable -eq $false) {
             $Errors.Add("Parameter `"-$Key`" cannot be null.")
             $Params[$Key] = $Sync.SessionParams.$Key # Restore last valid value    
+        }
+        #== ValidateRange
+        if ($null -ne $Def.ValidateRange -and $null -ne $Params[$Key]) {
+            $Min, $Max = $Def.ValidateRange
+            if ($Params[$Key] -lt $Min -or $Params[$Key] -gt $Max) {
+                $Errors.Add("Parameter `"-$Key`" value '$($Params[$Key])' is out of range [$Min..$Max].")
+                if ($null -ne $Sync.SessionParams -and $Sync.SessionParams.ContainsKey($Key)) {
+                    $Params[$Key] = $Sync.SessionParams[$Key]
+                }
+            }
+        }
+        #== ValidateSet
+        if ($null -ne $Def.ValidateSet -and $null -ne $Params[$Key]) {
+            if ($Params[$Key] -notin $Def.ValidateSet) {
+                $Valid = $Def.ValidateSet -join ', '
+                $Errors.Add("Parameter `"-$Key`" value '$($Params[$Key])' is not in set [$Valid].")
+                if ($null -ne $Sync.SessionParams -and $Sync.SessionParams.ContainsKey($Key)) {
+                    $Params[$Key] = $Sync.SessionParams[$Key]
+                }
+            }
         }
     }
 
