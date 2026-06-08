@@ -26,12 +26,12 @@
 
                     private void SetProperty<T>(ref T field, T value, [CallerMemberName] string name = "")
                     {
-                        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+                        if (field == null && value == null) return;
+                        if (field != null && field.Equals(value)) return;
                         field = value;
                         if (PropertyChanged != null)
                             PropertyChanged(this, new PropertyChangedEventArgs(name));
                     }
-
                     public int   Index     { get; set; }
                     public int[] Neighbors { get; set; }
 
@@ -57,7 +57,7 @@
                     }
                 }
 "@
-            $Assemblies = 'PresentationCore', 'WindowsBase', 'System.Xaml' | ForEach-Object {
+            $Assemblies = 'PresentationCore', 'WindowsBase', 'System.Xaml','System.ObjectModel' | ForEach-Object {
                 [System.Reflection.Assembly]::LoadWithPartialName($_)
             } | Select-Object -ExpandProperty Location
             Add-Type -TypeDefinition $Class -Language 'CSharp' -ReferencedAssemblies $Assemblies
@@ -140,7 +140,7 @@
                         $null = $SafeIndexes.UnionWith([int[]]($Field.Neighbors + $Field.Index))
 
                         # Build available indexes excluding safe zone
-                        [int[]]$AvailableIndexes = [System.Linq.Enumerable]::Except(
+                        [object[]]$AvailableIndexes = [System.Linq.Enumerable]::Except(
                             [System.Linq.Enumerable]::Range(0, $FieldsCollection.Count),
                             $SafeIndexes
                         )
