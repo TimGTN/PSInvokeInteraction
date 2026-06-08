@@ -70,12 +70,12 @@
             Contact : @TimGTN
             Created : 2026-04-30
             Updated : 2026-06-08
-            Version : 1.9
+            Version : 1.9.1
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
     param(
-        [Alias('Name')][string]$Type, 
+        [string]$Type, 
         [switch]$Help,
 
         [string]$IconBrush,
@@ -2055,32 +2055,40 @@
         return
     }
 
-    # Fallback to current type if -Type is omitted; required for the first call of any interaction.
+    # Resolve Type: explicit -Type, or Name key from CustomInteraction.
     if (-not $PSBoundParameters.ContainsKey('Type')) {
-        if ($PSBoundParameters.ContainsKey('CustomInteraction')) {
-            throw "A name is required when providing a custom interaction. Please use the '-Name' parameter."
+        if ($PSBoundParameters.ContainsKey('CustomInteraction') -and $CustomInteraction.ContainsKey('Name') -and $CustomInteraction.Name) {
+            $Type = $CustomInteraction.Name
+        } elseif ($PSBoundParameters.ContainsKey('CustomInteraction')) {
+            throw "A name is required when providing a custom interaction. Add a 'Name' key to the interaction hashtable or use the '-Type' parameter."
+        } else {
+            throw "No interaction type specified. Use '-Type'. Available: $($Sync.Config.Interactions.Keys -join ', ')."
         }
-        if (-not $Sync.CurrentType) {
-            throw "No active interaction type, specify '-Type'. Available: $($Sync.Config.Interactions.Keys -join ', ')."
-        }
-        $Type = $Sync.CurrentType
     }
 
     # Custom interaction validation
     if ($PSBoundParameters.ContainsKey('CustomInteraction')) {
+        if ($CustomInteraction.ContainsKey('Name') -and $CustomInteraction.Name -and $PSBoundParameters.ContainsKey('Type') -and $Type -ne $CustomInteraction.Name) {
+            throw "Conflicting names: '-Type' is '$Type' but the interaction's 'Name' key is '$($CustomInteraction.Name)'. They must match or omit '-Type'."
+        }
+        if (-not $CustomInteraction.ContainsKey('Name') -or -not $CustomInteraction.Name) { $CustomInteraction.Name = $Type }
+
         $Interactions = $Sync.Config.Interactions
         if ($Interactions.ContainsKey($Type) -and $null -eq $Interactions[$Type]._customFlag) {
             throw "The name `"$Type`" is reserved for a built-in interaction. Please choose a different name for your custom interaction."
         }
-        #### TBD CHECK FOR CUSTOM Interaction SIGNATURE
         if ($Interactions.ContainsKey($Type) -and $Interactions[$Type]._customFlag -and -not $Force.IsPresent) {
             throw "A custom interaction named `"$Type`" already exists. Use '-Force' to override it."
-        }      
+        }
         if (-not $CustomInteraction.ContainsKey('Xaml')) { throw "Custom interaction must contain a 'Xaml' key." }
         & $Sync.Config.Helpers.ValidateXaml $CustomInteraction.Xaml "Custom interaction 'Xaml'"
 
-        #### TBD CHECK EVERY PARAM hAS A 'TYPE' KEY
-
+        # Check every parameter has a 'Type' key
+        foreach ($ParamName in $CustomInteraction.Parameters.Keys) {
+            if (-not $CustomInteraction.Parameters[$ParamName].ContainsKey('Type')) {
+                throw "Custom interaction parameter '$ParamName' is missing a 'Type' key."
+            }
+        }
         if (-not $CustomInteraction.ContainsKey('Parameters')) { $CustomInteraction.Parameters = @{} }
         $CustomInteraction._customFlag = $true
         $Interactions[$Type] = $CustomInteraction
