@@ -8,207 +8,207 @@
                         HelpText="Mine density - Easy: 12%, Medium: 16%, Hard: 20%." }
     }
     Xaml = @"
-    <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-        <Grid.Resources>
-            <SolidColorBrush x:Key="Field.Background" Color="#FFECECEC" />
-            <Color x:Key="Color.Field.BorderBrush.Light">#F6F6F6</Color>
-            <Color x:Key="Color.Field.BorderBrush.Dark">#E1E1E1</Color>
-            <SolidColorBrush x:Key="Field.BorderBrush.Dark" Color="{StaticResource Color.Field.BorderBrush.Dark}" />
-            <SolidColorBrush x:Key="Field.Background.Used" Color="#FCFCFC" />
-            <Style x:Key="ST_Field" TargetType="ContentControl">
-                <Setter Property="Background" Value="{StaticResource Field.Background}" />
-                <Setter Property="BorderThickness" Value="5" />
-                <Setter Property="Focusable" Value="False" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ContentControl">
-                            <Border x:Name="PART_Border" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
-                                <Border.BorderBrush>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="{StaticResource Color.Field.BorderBrush.Light}" Offset="0" />
-                                        <GradientStop Color="{StaticResource Color.Field.BorderBrush.Light}" Offset="0.5" />
-                                        <GradientStop Color="{StaticResource Color.Field.BorderBrush.Dark}" Offset="0.5" />
-                                        <GradientStop Color="{StaticResource Color.Field.BorderBrush.Dark}" Offset="1" />
-                                    </LinearGradientBrush>
-                                </Border.BorderBrush>
-                                <Grid>
-                                    <TextBlock x:Name="PART_Type" Height="22" Text="{Binding Type}" FontSize="16" FontWeight="Bold" Opacity="0" TextAlignment="Center" />
-                                    <TextBlock x:Name="PART_Flag" Height="18" Text="🚩" Foreground="Red" Opacity="0" TextAlignment="Center" />
-                                </Grid>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <!--Type content-->
-                                <DataTrigger Binding="{Binding Type}" Value="Bomb">
-                                    <Setter TargetName="PART_Type" Property="Text" Value="💣" />
-                                    <Setter Property="Foreground" Value="Black" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="0">
-                                    <Setter TargetName="PART_Type" Property="Text" Value="{x:Null}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="1">
-                                    <Setter Property="Foreground" Value="#66ccff" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="2">
-                                    <Setter Property="Foreground" Value="#a0e65c" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="3">
-                                    <Setter Property="Foreground" Value="#ff5555" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="4">
-                                    <Setter Property="Foreground" Value="#b380ff" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="5">
-                                    <Setter Property="Foreground" Value="#d35f5f" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="6">
-                                    <Setter Property="Foreground" Value="#87decd" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="7">
-                                    <Setter Property="Foreground" Value="#ffbe40" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="8">
-                                    <Setter Property="Foreground" Value="#ac9393" />
-                                </DataTrigger>
-                                <!--Hover when not flagged-->
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                        <Condition Binding="{Binding Flagged}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Cursor" Value="Hand" />
-                                </MultiDataTrigger>
-                                <!--Uncover Field-->
-                                <DataTrigger Binding="{Binding Used}" Value="True">
-                                    <Setter TargetName="PART_Type" Property="Opacity" Value="1" />
-                                    <Setter Property="BorderThickness" Value="1" />
-                                    <Setter Property="Background" Value="{StaticResource Field.Background.Used}" />
-                                    <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Field.BorderBrush.Dark}" />
-                                </DataTrigger>
-                                <!--Show flag-->
-                                <DataTrigger Binding="{Binding Flagged}" Value="True">
-                                    <Setter TargetName="PART_Flag" Property="Opacity" Value="1" />
-                                </DataTrigger>
-                                <!--ENDGAME-->
-                                <!--LOSE : Blank or Number field was flagged-->
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Used}" Value="False" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=IsHitTestVisible}" Value="False" />
-                                        <Condition Binding="{Binding Flagged}" Value="True" />
-                                        <Condition Binding="{Binding Type.Length}" Value="1" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="BorderThickness" Value="1" />
-                                    <Setter Property="Background" Value="{StaticResource Field.Background.Used}" />
-                                    <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Field.BorderBrush.Dark}" />
-                                    <Setter TargetName="PART_Flag" Property="Text" Value="╳" />
-                                    <Setter TargetName="PART_Flag" Property="FontSize" Value="18" />
-                                    <Setter TargetName="PART_Flag" Property="Background" Value="#55ECECEC" />
-                                    <Setter TargetName="PART_Flag" Property="Height" Value="35" />
-                                    <Setter TargetName="PART_Type" Property="Opacity" Value="1" />
-                                    <Setter TargetName="PART_Type" Property="Text" Value="💣" />
-                                    <Setter Property="Foreground" Value="Black" />
-                                </MultiDataTrigger>
-                                <!--LOSE : Bomb was hit-->
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Used}" Value="True" />
-                                        <Condition Binding="{Binding Flagged}" Value="False" />
-                                        <Condition Binding="{Binding Type}" Value="Bomb" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="PART_Border" Property="Background" Value="#ff7f7f" />
-                                    <Setter TargetName="PART_Type" Property="Opacity" Value="1" />
-                                </MultiDataTrigger>
-                                <!--LOSE : Bomb was not flagged-->
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Used}" Value="False" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=IsHitTestVisible}" Value="False" />
-                                        <Condition Binding="{Binding Flagged}" Value="False" />
-                                        <Condition Binding="{Binding Type}" Value="Bomb" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="BorderThickness" Value="1" />
-                                    <Setter Property="Background" Value="{StaticResource Field.Background.Used}" />
-                                    <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Field.BorderBrush.Dark}" />
-                                    <Setter TargetName="PART_Type" Property="Opacity" Value="1" />
-                                </MultiDataTrigger>
-                                <!--WIN : Bomb was flagged-->
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Used}" Value="False" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=IsHitTestVisible}" Value="True" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=IsEnabled}" Value="False" />
-                                        <Condition Binding="{Binding Flagged}" Value="True" />
-                                        <Condition Binding="{Binding Type}" Value="Bomb" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="PART_Flag" Property="Foreground" Value="#49d049" />
-                                </MultiDataTrigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <CollectionViewSource x:Name="CVS_Fields" x:Key="CVS_Fields" />
-            <Style x:Key="ST_Counter" TargetType="ContentControl">
-                <Setter Property="Background" Value="{DynamicResource Field.Background}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush.S.Default}" />
-                <Setter Property="Foreground" Value="{DynamicResource Foreground.Default}" />
-                <Setter Property="FontSize" Value="28" />
-                <Setter Property="FontFamily" Value="Consolas" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="Padding" Value="2,0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ContentControl">
-                            <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" CornerRadius="{DynamicResource CornerRadius}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
-                                <TextBlock Text="{TemplateBinding Content}" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </Grid.Resources>
-        <DockPanel>
-            <UniformGrid Columns="3" DockPanel.Dock="Top" Margin="0,0,0,8" Height="35">
-                <ContentControl x:Name="CTC_Remaining" Style="{StaticResource ST_Counter}" HorizontalAlignment="Left" Content="000" />
-                <Button x:Name="BTN_Reload" DockPanel.Dock="Top">
-                    <Grid>
-                        <Ellipse Width="26" Height="26" Fill="Yellow" />
-                        <TextBlock FontSize="25" TextAlignment="Center" VerticalAlignment="Center" Height="36.5" Foreground="black">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text" Value="🙂" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=ITC_Board, Path=IsHitTestVisible}" Value="False">
-                                            <Setter Property="Text" Value="😵" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ElementName=ITC_Board, Path=IsEnabled}" Value="False">
-                                            <Setter Property="Text" Value="😎" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ElementName=BTN_Reload, Path=IsPressed}" Value="True">
-                                            <Setter Property="Text" Value="😖" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-                </Button>
-                <ContentControl x:Name="CTC_Timer" Style="{StaticResource ST_Counter}" HorizontalAlignment="Right" Content="000" />
-            </UniformGrid>
-            <ItemsControl x:Name="ITC_Board" DataContext="{StaticResource CVS_Fields}" ItemsSource="{Binding IsAsync=True}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=Tag.X}" Rows="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=Tag.Y}" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <ContentControl Style="{StaticResource ST_Field}" Width="30" Height="30" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </DockPanel>
-    </Grid>
+        <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <Grid.Resources>
+                <SolidColorBrush x:Key="Field.Background" Color="#FFECECEC" />
+                <Color x:Key="Color.Field.BorderBrush.Light">#F6F6F6</Color>
+                <Color x:Key="Color.Field.BorderBrush.Dark">#E1E1E1</Color>
+                <SolidColorBrush x:Key="Field.BorderBrush.Dark" Color="{StaticResource Color.Field.BorderBrush.Dark}" />
+                <SolidColorBrush x:Key="Field.Background.Used" Color="#FCFCFC" />
+                <Style x:Key="ST_Field" TargetType="ContentControl">
+                    <Setter Property="Background" Value="{StaticResource Field.Background}" />
+                    <Setter Property="BorderThickness" Value="5" />
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ContentControl">
+                                <Border x:Name="PART_Border" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                                    <Border.BorderBrush>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="{StaticResource Color.Field.BorderBrush.Light}" Offset="0" />
+                                            <GradientStop Color="{StaticResource Color.Field.BorderBrush.Light}" Offset="0.5" />
+                                            <GradientStop Color="{StaticResource Color.Field.BorderBrush.Dark}" Offset="0.5" />
+                                            <GradientStop Color="{StaticResource Color.Field.BorderBrush.Dark}" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Border.BorderBrush>
+                                    <Grid>
+                                        <TextBlock x:Name="PART_Type" Height="22" Text="{Binding Type}" FontSize="16" FontWeight="Bold" Opacity="0" TextAlignment="Center" />
+                                        <TextBlock x:Name="PART_Flag" Height="18" Text="🚩" Foreground="Red" Opacity="0" TextAlignment="Center" />
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <!--Type content-->
+                                    <DataTrigger Binding="{Binding Type}" Value="Bomb">
+                                        <Setter TargetName="PART_Type" Property="Text" Value="💣" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="0">
+                                        <Setter TargetName="PART_Type" Property="Text" Value="{x:Null}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="1">
+                                        <Setter Property="Foreground" Value="#66ccff" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="2">
+                                        <Setter Property="Foreground" Value="#a0e65c" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="3">
+                                        <Setter Property="Foreground" Value="#ff5555" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="4">
+                                        <Setter Property="Foreground" Value="#b380ff" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="5">
+                                        <Setter Property="Foreground" Value="#d35f5f" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="6">
+                                        <Setter Property="Foreground" Value="#87decd" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="7">
+                                        <Setter Property="Foreground" Value="#ffbe40" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}" Value="8">
+                                        <Setter Property="Foreground" Value="#ac9393" />
+                                    </DataTrigger>
+                                    <!--Hover when not flagged-->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                            <Condition Binding="{Binding Flagged}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Cursor" Value="Hand" />
+                                    </MultiDataTrigger>
+                                    <!--Uncover Field-->
+                                    <DataTrigger Binding="{Binding Used}" Value="True">
+                                        <Setter TargetName="PART_Type" Property="Opacity" Value="1" />
+                                        <Setter Property="BorderThickness" Value="1" />
+                                        <Setter Property="Background" Value="{StaticResource Field.Background.Used}" />
+                                        <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Field.BorderBrush.Dark}" />
+                                    </DataTrigger>
+                                    <!--Show flag-->
+                                    <DataTrigger Binding="{Binding Flagged}" Value="True">
+                                        <Setter TargetName="PART_Flag" Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                    <!--ENDGAME-->
+                                    <!--LOSE : Blank or Number field was flagged-->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Used}" Value="False" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=IsHitTestVisible}" Value="False" />
+                                            <Condition Binding="{Binding Flagged}" Value="True" />
+                                            <Condition Binding="{Binding Type.Length}" Value="1" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="BorderThickness" Value="1" />
+                                        <Setter Property="Background" Value="{StaticResource Field.Background.Used}" />
+                                        <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Field.BorderBrush.Dark}" />
+                                        <Setter TargetName="PART_Flag" Property="Text" Value="╳" />
+                                        <Setter TargetName="PART_Flag" Property="FontSize" Value="18" />
+                                        <Setter TargetName="PART_Flag" Property="Background" Value="#55ECECEC" />
+                                        <Setter TargetName="PART_Flag" Property="Height" Value="35" />
+                                        <Setter TargetName="PART_Type" Property="Opacity" Value="1" />
+                                        <Setter TargetName="PART_Type" Property="Text" Value="💣" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                    </MultiDataTrigger>
+                                    <!--LOSE : Bomb was hit-->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Used}" Value="True" />
+                                            <Condition Binding="{Binding Flagged}" Value="False" />
+                                            <Condition Binding="{Binding Type}" Value="Bomb" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="PART_Border" Property="Background" Value="#ff7f7f" />
+                                        <Setter TargetName="PART_Type" Property="Opacity" Value="1" />
+                                    </MultiDataTrigger>
+                                    <!--LOSE : Bomb was not flagged-->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Used}" Value="False" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=IsHitTestVisible}" Value="False" />
+                                            <Condition Binding="{Binding Flagged}" Value="False" />
+                                            <Condition Binding="{Binding Type}" Value="Bomb" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="BorderThickness" Value="1" />
+                                        <Setter Property="Background" Value="{StaticResource Field.Background.Used}" />
+                                        <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Field.BorderBrush.Dark}" />
+                                        <Setter TargetName="PART_Type" Property="Opacity" Value="1" />
+                                    </MultiDataTrigger>
+                                    <!--WIN : Bomb was flagged-->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Used}" Value="False" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=IsHitTestVisible}" Value="True" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=IsEnabled}" Value="False" />
+                                            <Condition Binding="{Binding Flagged}" Value="True" />
+                                            <Condition Binding="{Binding Type}" Value="Bomb" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="PART_Flag" Property="Foreground" Value="#49d049" />
+                                    </MultiDataTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <CollectionViewSource x:Name="CVS_Fields" x:Key="CVS_Fields" />
+                <Style x:Key="ST_Counter" TargetType="ContentControl">
+                    <Setter Property="Background" Value="{DynamicResource Field.Background}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush.S.Default}" />
+                    <Setter Property="Foreground" Value="{DynamicResource Foreground.Default}" />
+                    <Setter Property="FontSize" Value="28" />
+                    <Setter Property="FontFamily" Value="Consolas" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="Padding" Value="2,0" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ContentControl">
+                                <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" CornerRadius="{DynamicResource CornerRadius}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                                    <TextBlock Text="{TemplateBinding Content}" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Grid.Resources>
+            <DockPanel>
+                <UniformGrid Columns="3" DockPanel.Dock="Top" Margin="0,0,0,8" Height="35">
+                    <ContentControl x:Name="CTC_Remaining" Style="{StaticResource ST_Counter}" HorizontalAlignment="Left" Content="000" />
+                    <Button x:Name="BTN_Reload" DockPanel.Dock="Top">
+                        <Grid>
+                            <Ellipse Width="26" Height="26" Fill="Yellow" />
+                            <TextBlock FontSize="25" TextAlignment="Center" VerticalAlignment="Center" Height="36.5" Foreground="black">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="🙂" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=ITC_Board, Path=IsHitTestVisible}" Value="False">
+                                                <Setter Property="Text" Value="😵" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=ITC_Board, Path=IsEnabled}" Value="False">
+                                                <Setter Property="Text" Value="😎" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=BTN_Reload, Path=IsPressed}" Value="True">
+                                                <Setter Property="Text" Value="😖" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </Button>
+                    <ContentControl x:Name="CTC_Timer" Style="{StaticResource ST_Counter}" HorizontalAlignment="Right" Content="000" />
+                </UniformGrid>
+                <ItemsControl x:Name="ITC_Board" DataContext="{StaticResource CVS_Fields}" ItemsSource="{Binding IsAsync=True}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=Tag.X}" Rows="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}, Path=Tag.Y}" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ContentControl Style="{StaticResource ST_Field}" Width="30" Height="30" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </DockPanel>
+        </Grid>
 "@
     Init = {
         param($Ctx)

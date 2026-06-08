@@ -12,23 +12,23 @@
                          HelpText="Label for the cancellation button." }
     }
     Xaml = @"
-    <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-        <TextBox x:Name="TBX_Input" Margin="0,0,0,8" Tag="..." />
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="BTN_Cancel" Style="{DynamicResource ST_BTN_Secondary}" Content="Cancel" />
-            <Button x:Name="BTN_Ok" Margin="8,0,0,0" DockPanel.Dock="Right" Content="Ok">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource ST_BTN_Primary}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=TBX_Input,Path=Text.Length}" Value="0">
-                                <Setter Property="IsEnabled" Value="False" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+        <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <TextBox x:Name="TBX_Input" Margin="0,0,0,8" Tag="..." />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="BTN_Cancel" Style="{DynamicResource ST_BTN_Secondary}" Content="Cancel" />
+                <Button x:Name="BTN_Ok" Margin="8,0,0,0" DockPanel.Dock="Right" Content="Ok">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ST_BTN_Primary}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=TBX_Input,Path=Text.Length}" Value="0">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
 "@
     Init = {
         param($Ctx)

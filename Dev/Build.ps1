@@ -11,7 +11,7 @@
     .\Build-InvokeInteraction.ps1 -BuiltinInteractions 'Prompt','Confirm'
 #>
 param(
-    [string[]] $BuiltinInteractions = @("InputText","ItemSelect","MessageBox","ProgressBar","Credential")
+    [string[]] $BuiltinInteractions = @() # All if empty
 )
 
 $ErrorActionPreference = 'Stop'
@@ -156,7 +156,7 @@ $CleanLayout = $RawLayout `
     -replace '(?s)<ContentPresenter\.Resources>.*?</ContentPresenter\.Resources>',                       '' `
     -replace '(?s)<ContentPresenter\.Content>.*?</ContentPresenter\.Content>',                           ''
 
-$LayoutHereString = New-HereString -Content (Format-XmlString $CleanLayout)
+$LayoutHereString = New-HereString -Content (Format-XmlString $CleanLayout) -LineIndent '        '
 $Output = Set-Placeholder -Text $Output -Name 'WINDOW_LAYOUT' -Value $LayoutHereString
 
 #endregion
@@ -171,7 +171,7 @@ if (-not (Test-Path $StylesPath)) { throw "Styles not found: $StylesPath" }
 Write-Host 'Processing Styles.xaml...'
 
 $RawStyles = Get-Content $StylesPath -Raw -Encoding UTF8
-$StylesHereString = New-HereString -Content $RawStyles
+$StylesHereString = New-HereString -Content $RawStyles -LineIndent '        '
 $Output = Set-Placeholder -Text $Output -Name 'WINDOW_STYLES' -Value $StylesHereString
 
 #endregion
@@ -205,7 +205,7 @@ foreach ($Ps1File in (Get-ChildItem $DevInteractionsPs1Dir -Filter '*.ps1')) {
  
     # Clean + format XAML, wrap as here-string
     $RawXaml  = Get-Content $XamlPath -Raw -Encoding UTF8
-    $XamlHere = New-HereString -Content (Format-XmlString (Remove-XamlInteractionWrapper $RawXaml))
+    $XamlHere = New-HereString -Content (Format-XmlString (Remove-XamlInteractionWrapper $RawXaml)) -LineIndent '        '
  
     # Inject XAML into PS1
     $RawPs1   = Get-Content $Ps1File.FullName -Raw -Encoding UTF8
@@ -266,7 +266,12 @@ foreach ($InteractionName in $BuiltinInteractions) {
         throw "Builtin '$InteractionName' was not found in '$DevInteractionsPs1Dir'."
     }
 }
- 
+
+# Include all by default
+if ($BuiltinInteractions.Count -eq 0) {
+    $BuiltinInteractions = @($BuiltInteractions.Keys | Sort-Object)
+}
+
 $InteractionEntries = foreach ($InteractionName in $BuiltinInteractions) {
  
     $Lines = $BuiltInteractions[$InteractionName].Trim() -split '\r?\n'

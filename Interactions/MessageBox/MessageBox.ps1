@@ -14,39 +14,39 @@
                          HelpText="Custom buttons generated right-to-left. First one gets primary styling." }
     }
     Xaml = @"
-    <DockPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-        <!--Button panel-->
-        <ListBox x:Name="LBX_Buttons" BorderThickness="0" SelectionMode="Single" ItemsSource="{Binding}" DockPanel.Dock="Bottom" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="{DynamicResource FontSize}" BorderBrush="{DynamicResource BorderBrush.S.Default}">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel FlowDirection="RightToLeft" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <Button Name="PART_Btn" Content="{Binding Content}" Style="{DynamicResource ST_BTN_Secondary}" Margin="0,0,8,0" />
-                                <ControlTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding Tag}" Value="True">
-                                        <Setter TargetName="PART_Btn" Property="Style" Value="{DynamicResource ST_BTN_Primary}" />
-                                    </DataTrigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
-        <!--Message-->
-        <Grid Margin="0,0,0,8">
-            <DockPanel>
-                <Canvas Name="CVS_Icon" Style="{DynamicResource ST_Icon}" Margin="0,0,12,0" Width="32" Height="32" DockPanel.Dock="Left" />
-                <TextBlock Name="TBK_Message" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Message" FontSize="13" />
-            </DockPanel>
-        </Grid>
-    </DockPanel>
+        <DockPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <!--Button panel-->
+            <ListBox x:Name="LBX_Buttons" BorderThickness="0" SelectionMode="Single" ItemsSource="{Binding}" DockPanel.Dock="Bottom" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="{DynamicResource FontSize}" BorderBrush="{DynamicResource BorderBrush.S.Default}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel FlowDirection="RightToLeft" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Button Name="PART_Btn" Content="{Binding Content}" Style="{DynamicResource ST_BTN_Secondary}" Margin="0,0,8,0" />
+                                    <ControlTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding Tag}" Value="True">
+                                            <Setter TargetName="PART_Btn" Property="Style" Value="{DynamicResource ST_BTN_Primary}" />
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+            <!--Message-->
+            <Grid Margin="0,0,0,8">
+                <DockPanel>
+                    <Canvas Name="CVS_Icon" Style="{DynamicResource ST_Icon}" Margin="0,0,12,0" Width="32" Height="32" DockPanel.Dock="Left" />
+                    <TextBlock Name="TBK_Message" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Message" FontSize="13" />
+                </DockPanel>
+            </Grid>
+        </DockPanel>
 "@
     Init = {
         param($Ctx)

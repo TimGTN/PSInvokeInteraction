@@ -12,11 +12,11 @@
         Async    = @{ Type=[switch]; Default=$true; HelpText=$false }
     }
     Xaml = @"
-    <DockPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-        <ProgressBar x:Name="PBG_Progress" DockPanel.Dock="Bottom" />
-        <TextBlock x:Name="TBK_Remaining" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,4,0,8" Foreground="{DynamicResource Foreground.Default}" DockPanel.Dock="Bottom" />
-        <TextBlock Name="TBK_Message" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Message" FontSize="13" Margin="0,0,0,4" />
-    </DockPanel>
+        <DockPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <ProgressBar x:Name="PBG_Progress" DockPanel.Dock="Bottom" />
+            <TextBlock x:Name="TBK_Remaining" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,4,0,8" Foreground="{DynamicResource Foreground.Default}" DockPanel.Dock="Bottom" />
+            <TextBlock Name="TBK_Message" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Message" FontSize="13" Margin="0,0,0,4" />
+        </DockPanel>
 "@
     Init = {
         param($Ctx)

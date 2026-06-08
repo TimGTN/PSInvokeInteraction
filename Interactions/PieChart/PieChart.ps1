@@ -19,7 +19,7 @@
                    HelpText="Optional unit suffix appended to each slice label (e.g. 'GB', 'ms', '%')." }
     }
     Xaml = @"
-    <Image x:Name="IMG_Chart" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" />
+        <Image x:Name="IMG_Chart" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" />
 "@
     Init = {
         param($Ctx)

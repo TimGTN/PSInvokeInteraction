@@ -12,66 +12,66 @@
                         HelpText="Label for the cancellation button." }
     }
     Xaml = @"
-    <DockPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-        <DockPanel.Resources>
-            <CollectionViewSource x:Name="CVS_Items" x:Key="CVS_Items" Source="{DynamicResource DummyItems}" />
-        </DockPanel.Resources>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button x:Name="BTN_Cancel" Style="{DynamicResource ST_BTN_Secondary}" Content="Cancel" />
-            <Button x:Name="BTN_Ok" Margin="8,0,0,0" DockPanel.Dock="Right" Content="Ok">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource ST_BTN_Primary}">
+        <DockPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <DockPanel.Resources>
+                <CollectionViewSource x:Name="CVS_Items" x:Key="CVS_Items" Source="{DynamicResource DummyItems}" />
+            </DockPanel.Resources>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+                <Button x:Name="BTN_Cancel" Style="{DynamicResource ST_BTN_Secondary}" Content="Cancel" />
+                <Button x:Name="BTN_Ok" Margin="8,0,0,0" DockPanel.Dock="Right" Content="Ok">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ST_BTN_Primary}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=LBX_Select,Path=SelectedItems.Count}" Value="0">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+            <ListBox x:Name="LBX_Select" Margin="0,0,0,8" BorderThickness="{DynamicResource BorderThickness}" SelectionMode="Single" DataContext="{StaticResource CVS_Items}" ItemsSource="{Binding IsAsync=True}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="{DynamicResource FontSize}" BorderBrush="{DynamicResource BorderBrush.S.Default}" Padding="2">
+                <ListBox.Template>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource CornerRadius}">
+                            <ScrollViewer Padding="{TemplateBinding Padding}" Focusable="False">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Margin" Value="3,2,2,2" />
+                        <!--RadioButton (SelectionMode = Single)-->
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <RadioButton Content="{TemplateBinding Content}" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Padding="4,2" FontSize="{TemplateBinding FontSize}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=LBX_Select,Path=SelectedItems.Count}" Value="0">
-                                <Setter Property="IsEnabled" Value="False" />
+                            <!--Switch to CheckBox (SelectionMode = Multiple)-->
+                            <DataTrigger Binding="{Binding SelectionMode, RelativeSource={RelativeSource AncestorType=ListBox}}" Value="Multiple">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <CheckBox Content="{TemplateBinding Content}" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Padding="4,2" FontSize="{TemplateBinding FontSize}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </Button.Style>
-            </Button>
-        </StackPanel>
-        <ListBox x:Name="LBX_Select" Margin="0,0,0,8" BorderThickness="{DynamicResource BorderThickness}" SelectionMode="Single" DataContext="{StaticResource CVS_Items}" ItemsSource="{Binding IsAsync=True}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="{DynamicResource FontSize}" BorderBrush="{DynamicResource BorderBrush.S.Default}" Padding="2">
-            <ListBox.Template>
-                <ControlTemplate TargetType="ListBox">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource CornerRadius}">
-                        <ScrollViewer Padding="{TemplateBinding Padding}" Focusable="False">
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </ScrollViewer>
-                    </Border>
-                </ControlTemplate>
-            </ListBox.Template>
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Margin" Value="3,2,2,2" />
-                    <!--RadioButton (SelectionMode = Single)-->
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <RadioButton Content="{TemplateBinding Content}" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Padding="4,2" FontSize="{TemplateBinding FontSize}" />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <!--Switch to CheckBox (SelectionMode = Multiple)-->
-                        <DataTrigger Binding="{Binding SelectionMode, RelativeSource={RelativeSource AncestorType=ListBox}}" Value="Multiple">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <CheckBox Content="{TemplateBinding Content}" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Padding="4,2" FontSize="{TemplateBinding FontSize}" />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
-    </DockPanel>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </DockPanel>
 "@
     Init = {
         param($Ctx)
