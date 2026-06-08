@@ -347,3 +347,32 @@ Write-Host ''
 Write-Host "Built → $OutPath" -ForegroundColor Green
  
 #endregion
+
+# ---------------------------------------------------------------------------
+#region 8 - Generate Module
+# ---------------------------------------------------------------------------
+
+# Write .PSM1 module
+$DistDir = Join-Path $ProjectRoot 'Module'
+if (-not (Test-Path $DistDir)) { New-Item -ItemType Directory -Path $DistDir | Out-Null }
+$PsM1Path = Join-Path $DistDir 'PSInvokeInteraction.psm1'
+[System.IO.File]::WriteAllText($PsM1Path, $Output, [System.Text.Encoding]::UTF8)
+
+# Generate module manifest
+$ManifestPath = Join-Path $DistDir 'PSInvokeInteraction.psd1'
+$null = [System.Threading.Thread]::CurrentThread.CurrentUICulture = 'en-US'
+New-ModuleManifest -Path $ManifestPath `
+    -RootModule        'PSInvokeInteraction.psm1' `
+    -ModuleVersion     $Version `
+    -Guid              '566ee03b-8057-4e31-83c4-2a5657e8ca93' `
+    -Author            'TimGTN' `
+    -Description       'Invoke-Interaction lets you add interactive WPF dialogs to your scripts - input, selection, credentials, progress and more - without wrestling with WPF boilerplate.' `
+    -PowerShellVersion '5.1' `
+    -FunctionsToExport @('Invoke-Interaction') `
+    -AliasesToExport   @() `
+    -Tags              @('WPF','UI','Dialog','Interactive','Forms','Prompt') `
+    -ProjectUri        'https://github.com/TimGTN/PSInvokeInteraction' `
+    -LicenseUri        'https://github.com/TimGTN/PSInvokeInteraction/blob/main/LICENSE' `
+    -Copyright         '(c) 2026 TimGTN. MIT License.'
+
+#endregion

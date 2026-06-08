@@ -18,7 +18,7 @@ Built on a persistent WPF runspace with async support, `Invoke-Interaction` lets
 - **Sync & async modes** — block until the user responds, or get a handle to update the UI and track output while your script keeps running
 - **Custom interactions** — bring your own XAML, parameter definitions, and UI logic
 - **Built-in modern styles** — consistent look out of the box, fully inheritable in custom interactions
-- **Self-documenting** — `-Help` at any level surfaces syntax, parameters, and examples
+- **Self-documenting** — [`-Help`](#help) at any level surfaces syntax, parameters, and examples
 
 ## Requirements
  
@@ -44,10 +44,10 @@ $Button = Invoke-Interaction -Type MessageBox -Title "Confirm" -Message "Proceed
 ```
 
 ## Built-in Interaction Types
- 
-Five types are included out of the box: `InputText`, `ItemSelect`, `MessageBox`, `ProgressBar`, and `Credential`. Each one is fully documented directly in the source - use the built-in help system to explore them from your terminal (see [Help](#help) below).
 
-Additional interactions are available in the repository. You can use them by either registering them at runtime via [`-CustomInteraction`](#custom-interactions), or by adding them directly into the function's `Interactions` block for permanent availability.
+All interaction types are included out of the box (e.g., `InputText`, `ItemSelect`, `MessageBox`, `ProgressBar`, `Credential`, and more). Each one is fully documented directly in the source - use the built-in help system to explore them from your terminal (see [Help](#help) below).
+
+If you need a specific behavior not covered by the built-in types, you can still register your own interaction using the [`-CustomInteraction`](#custom-interactions) parameter.
 
 ## Window-Level Parameters
  
@@ -123,6 +123,7 @@ PARAMETERS
         ItemSelect  - Item selection list supporting both single and multiple selection modes.
         MessageBox  - Configurable message box with custom buttons and status icon.
         ProgressBar - Configurable asynchronous progress bar.
+        ...
     ...
 ```
  
@@ -222,6 +223,8 @@ The `Parameters` key is a hashtable where each entry defines a typed, documented
 | `Default` | | Default value used when the parameter is omitted |
 | `Nullable` | | When set to `$false`, the parameter cannot be `$null` |
 | `InitOnly` | | When `$true`, the parameter can only be set on first init — changing it later requires `-Force` |
+| `ValidateRange` | | Restricts the value to a minimum and maximum (e.g., `1, 100`) |
+| `ValidateSet`   | | Restricts the value to a predefined set of acceptable values |
 | `HelpText` | | Description shown by `-Help`. Set to `$false` to hide the parameter from help output |
  
 ### Init

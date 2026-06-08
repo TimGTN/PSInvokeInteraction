@@ -104,10 +104,10 @@
     )
 
     #region Window Definition & Styles
-    $WindowLayout   = #WINDOW_LAYOUT
+    $WindowLayout = #WINDOW_LAYOUT
         ''
 #WINDOW_LAYOUT
-    $WindowStyles   = #WINDOW_STYLES
+    $WindowStyles = #WINDOW_STYLES
         ''
 #WINDOW_STYLES
     $WindowElements = @{
@@ -901,7 +901,7 @@
 
     #region UI Parameters resolution
     $IsSameInteraction = $Type -eq $Sync.CurrentType
-    $IsPersisted       = $PSBoundParameters.ContainsKey('Async') -and $PSBoundParameters['Async'] -eq $true
+    $IsPersisted       = $PSBoundParameters.ContainsKey('Async') -and $PSBoundParameters['Async'] -eq $true -and $Type -eq $Sync.CurrentType
 
     #== Base params ==
     # Declared from persisted params or empty hashtable

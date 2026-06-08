@@ -1,5 +1,5 @@
 ﻿@{
-    Name = "MineSweeper"
+    Name = "Minesweeper"
     Description = "A Minesweeper game built as a proof-of-concept for 'Invoke-Interaction'. Fair warning: not guessing-free :)."
     Parameters  = @{
         GridSize   = @{ Type=[int]; Default=10; ValidateRange=(10,30); InitOnly=$True
