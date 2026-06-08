@@ -371,9 +371,12 @@ New-ModuleManifest -Path $ManifestPath `
     -PowerShellVersion '5.1' `
     -FunctionsToExport @('Invoke-Interaction') `
     -AliasesToExport   @() `
+    -CmdletsToExport   @() `
+    -VariablesToExport @() `
     -Tags              @('WPF','UI','Dialog','Interactive','Forms','Prompt') `
     -ProjectUri        'https://github.com/TimGTN/PSInvokeInteraction' `
     -LicenseUri        'https://github.com/TimGTN/PSInvokeInteraction/blob/main/LICENSE' `
     -Copyright         '(c) 2026 TimGTN. MIT License.'
+
 
 #endregion

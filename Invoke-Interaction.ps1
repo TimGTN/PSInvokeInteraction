@@ -70,7 +70,7 @@
             Contact : @TimGTN
             Created : 2026-04-30
             Updated : 2026-06-08
-            Version : 1.9.1
+            Version : 2.0.0
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]

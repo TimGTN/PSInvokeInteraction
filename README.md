@@ -27,7 +27,13 @@ Built on a persistent WPF runspace with async support, `Invoke-Interaction` lets
 
 ## Quick Start
  
-Copy the standalone function `Invoke-Interaction.ps1` into your project.
+Install the module from PowerShell Gallery, or copy the standalone function `Invoke-Interaction.ps1` into your project.
+
+```powershell
+Install-Module PSInvokeInteraction
+Import-Module PSInvokeInteraction
+```
+
 Then, you can simply call the features :
 
 ```powershell
