@@ -308,19 +308,20 @@ Write-Host "Builtins embedded: $(if ($BuiltinInteractions) { $BuiltinInteraction
 # ---------------------------------------------------------------------------
 
 $VersionPath = Join-Path $ProjectRoot 'VERSION'
-$CurrentVersion = if (Test-Path $VersionPath) { (Get-Content $VersionPath -Raw).Trim() } else { '0.0' }
+$CurrentVersion = if (Test-Path $VersionPath) { (Get-Content $VersionPath -Raw).Trim() } else { '0.0.0' }
 
 if (-not (Get-Command Invoke-Interaction -ErrorAction SilentlyContinue)) {
     . "$(Join-Path $ProjectRoot 'Invoke-Interaction.ps1')"
 }
 $Bump = Invoke-Interaction -Type MessageBox -Title "Confirmation" -Message "Version bump ? (current : $CurrentVersion)" `
-    -Buttons "Minor","Major","None"
+    -Buttons "Patch","Minor","Major","None"
 
 $Parts = $CurrentVersion -split '\.' | ForEach-Object { [int]$_ }
-if ($Bump -in "Major","Minor") {
+if ($Bump -in "Major","Minor","Patch") {
     switch ($Bump) {
-        'Major' { $Parts[0]++; $Parts[1] = 0 }
-        'Minor' { $Parts[1]++ }
+        'Major' { $Parts[0]++; $Parts[1] = 0; $Parts[2] = 0 }
+        'Minor' { $Parts[1]++;                $Parts[2] = 0 }
+        'Patch' { $Parts[2]++ }
     }
     $Version = $Parts -join '.'
     $Date = [datetime]::Now.ToString('yyyy-MM-dd')
@@ -353,7 +354,7 @@ Write-Host "Built → $OutPath" -ForegroundColor Green
 # ---------------------------------------------------------------------------
 
 # Write .PSM1 module
-$DistDir = Join-Path $ProjectRoot 'Module'
+$DistDir = Join-Path $ProjectRoot 'Module\PSInvokeInteraction'
 if (-not (Test-Path $DistDir)) { New-Item -ItemType Directory -Path $DistDir | Out-Null }
 $PsM1Path = Join-Path $DistDir 'PSInvokeInteraction.psm1'
 [System.IO.File]::WriteAllText($PsM1Path, $Output, [System.Text.Encoding]::UTF8)
