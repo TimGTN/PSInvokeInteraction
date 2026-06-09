@@ -69,8 +69,8 @@
             Author  : Tim GILLOTIN
             Contact : @TimGTN
             Created : 2026-04-30
-            Updated : 2026-06-08
-            Version : 2.0.0
+            Updated : 2026-06-09
+            Version : 2.1.0
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
@@ -1123,7 +1123,7 @@
                         }
                         $Ctx.Elements.TBX_Input.Add_TextChanged{
                             param($sender, $e)
-                            $Sync.SessionParams.CurrentText = $sender.Text     
+                            $Sync.SessionParams.CurrentText = $sender.Text
                         }
                     }
                     Update = {
@@ -1933,7 +1933,7 @@
                                      HelpText="Minimum progress value." }
                         Maximum = @{ Type=[double] ; Default=100
                                      HelpText="Maximum progress value." }
-                        Value   = @{ Type=[double]
+                        Value   = @{ Type=[double] ; Default=0
                                      HelpText="The current progress value." }
                         Indeterminate = @{ Type=[switch]
                                      HelpText="Enables continuous infinite animation." }
@@ -1948,13 +1948,10 @@
 "@
                     Init = {
                         param($Ctx)
-                        $Ctx.Sync.SessionParams.Value = $Ctx.Elements.PBG_Progress.Value
                         $Ctx.Elements.PBG_Progress.Add_ValueChanged{
                             param($sender, $e)
-                            $Ctx = $sender.DataContext
-                            $Ctx.Sync.SessionParams.Value = $sender.Value
                             if ($e.NewValue -ge $sender.Maximum){
-                                $Ctx.Sync.PendingOutput = $null
+                                $Sync.PendingOutput = $null
                             }
                         }
                     }
@@ -2296,10 +2293,12 @@
                     try { & ([scriptblock]::Create($PrevCtx.Interaction.Dispose.ToString())) $PrevCtx }
                     catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'DisposeInteraction' ; Terminating = $false ; Displayed = $false }) }
                 }
-
                 $Sync.UI_Interaction.Content = $null
                 $Sync.UI_Window.DataContext  = $null
+                $Sync.Remove('PendingOutput')
+                $Sync.Remove('Output')
 
+                ## Load the interaction
                 [xml]$Doc  = $Interaction.Xaml
                 $Root      = $Doc.DocumentElement
                 $RootTag   = $Root.LocalName
@@ -2369,27 +2368,36 @@
             # Show    : whether to display the window after processing
             $ProcessQueue = {
                 $Pending = $null
-                while ($Sync.RequestQueue.TryDequeue([ref]$Pending)) {
-                    if ([Linq.Enumerable]::Any($Sync.ErrorQueue, [Func[object,bool]]{ $args[0].Terminating })) { continue }
+                if (-not $Sync.RequestQueue.TryDequeue([ref]$Pending)) { return }
 
-                    # Check window integrity - reload if necessary
-                    try { & $EnsureWindow }
-                    catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'EnsureWindow' ; Terminating = $true ; Displayed = $false }) ; return }
+                if ([Linq.Enumerable]::Any($Sync.ErrorQueue, [Func[object,bool]]{ $args[0].Terminating })) { continue }
 
-                    # Apply static parameters
-                    try { & $SetStaticArgs $Pending.Params }
-                    catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'SetStaticArgs' ; Terminating = $false ; Displayed = $false }) }
+                # Check window integrity - reload if necessary
+                try { & $EnsureWindow }
+                catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'EnsureWindow' ; Terminating = $true ; Displayed = $false }) ; return }
 
-                    # Init the interaction once (returns early when Pending.Interaction is empty)
-                    try { & $InitInteraction $Pending }
-                    catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'InitInteraction' ; Terminating = $false ; Displayed = $false}) }
+                # Apply static parameters
+                try { & $SetStaticArgs $Pending.Params }
+                catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'SetStaticArgs' ; Terminating = $false ; Displayed = $false }) }
 
-                    # Update current interaction (apply dynamic args)
-                    try { & $UpdateInteraction $Pending }
-                    catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'UpdateInteraction' ; Terminating = $false ; Displayed = $false}) }
+                # Init the interaction once (returns early when Pending.Interaction is empty)
+                try { & $InitInteraction $Pending }
+                catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'InitInteraction' ; Terminating = $false ; Displayed = $false}) }
 
-                    # Show the window
-                    if ($Pending.Show) { $Sync.UI_Window.Show() }
+                # Update current interaction (apply dynamic args)
+                try { & $UpdateInteraction $Pending }
+                catch { $Sync.ErrorQueue.Enqueue(@{ Record = $_ ; Source = 'UpdateInteraction' ; Terminating = $false ; Displayed = $false}) }
+
+                # Show the window
+                if ($Pending.Show) { 
+                    [System.Windows.Threading.Dispatcher]::CurrentDispatcher.BeginInvoke(
+                        [System.Windows.Threading.DispatcherPriority]::Loaded,
+                        [action]{ $Sync.UI_Window.Show() })
+                }
+
+                # Call again if queue is not empty
+                if ($Sync.RequestQueue.Count -gt 0) {
+                    [System.Windows.Threading.Dispatcher]::CurrentDispatcher.BeginInvoke($Sync.ProcessQueueAction)
                 }
             }
             $Sync.ProcessQueueAction = [action]$ProcessQueue
@@ -2607,7 +2615,7 @@
     }
 
     # Warn on undeclared interaction parameters (one time per parameter)
-    foreach ($Key in $Params.Keys) {
+    foreach ($Key in @($Params.Keys)) {
         if ($Interaction.Parameters.ContainsKey($Key) -or $Key -in $Sync.Config.StaticArgs -or
             ($null -ne $Sync.SessionParams -and $Sync.SessionParams.ContainsKey($Key)) -or
             -not $DynResolved.ContainsKey($Key) )
@@ -2781,6 +2789,11 @@
     $InteractionHash = & $Helpers.GenerateHash ([xml]$Interaction.Xaml).OuterXml, $Interaction.Init, $Interaction.Update
     $NeedsLoad = -not $IsPersisted -or -not $IsSameInteraction -or $InteractionHash -ne $Sync.InteractionHash -or $Force.IsPresent
 
+    # Save state for next call
+    $Sync.InteractionHash = $InteractionHash
+    $Sync.SessionParams   = $Params.Clone()
+    $Sync.CurrentType     = $Type # Optimistic set to prevent async race condition
+
     # Enqueue RequestItem
     $Pending = @{ 
         Params = $Params
@@ -2791,11 +2804,6 @@
     }
     $Sync.RequestQueue.Enqueue($Pending)
     $Sync.Signal.Release() | Out-Null
-
-    # Save state for next call
-    $Sync.InteractionHash = $InteractionHash
-    $Sync.SessionParams   = $Params
-    $Sync.CurrentType     = $Type # Optimistic set to prevent async race condition
 
     # Discard previous output and errors - skip on internal update calls
     if ($Show) {

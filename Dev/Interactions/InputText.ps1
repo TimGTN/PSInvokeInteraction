@@ -43,7 +43,7 @@
         }
         $Ctx.Elements.TBX_Input.Add_TextChanged{
             param($sender, $e)
-            $Sync.SessionParams.CurrentText = $sender.Text     
+            $Sync.SessionParams.CurrentText = $sender.Text
         }
     }
     Update = {

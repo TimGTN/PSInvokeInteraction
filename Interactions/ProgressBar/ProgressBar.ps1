@@ -10,7 +10,7 @@
                      HelpText="Minimum progress value." }
         Maximum = @{ Type=[double] ; Default=100
                      HelpText="Maximum progress value." }
-        Value   = @{ Type=[double]
+        Value   = @{ Type=[double] ; Default=0
                      HelpText="The current progress value." }
         Indeterminate = @{ Type=[switch]
                      HelpText="Enables continuous infinite animation." }
@@ -25,13 +25,10 @@
 "@
     Init = {
         param($Ctx)
-        $Ctx.Sync.SessionParams.Value = $Ctx.Elements.PBG_Progress.Value
         $Ctx.Elements.PBG_Progress.Add_ValueChanged{
             param($sender, $e)
-            $Ctx = $sender.DataContext
-            $Ctx.Sync.SessionParams.Value = $sender.Value
             if ($e.NewValue -ge $sender.Maximum){
-                $Ctx.Sync.PendingOutput = $null
+                $Sync.PendingOutput = $null
             }
         }
     }
