@@ -69,8 +69,8 @@
             Author  : Tim GILLOTIN
             Contact : @TimGTN
             Created : 2026-04-30
-            Updated : 2026-06-09
-            Version : 2.1.0
+            Updated : 2026-06-10
+            Version : 2.1.1
             Repository : https://github.com/TimGTN/PSInvokeInteraction
     #>
     [CmdletBinding()]
@@ -1634,6 +1634,7 @@
                                 for ($x = 0; $x -lt $Columns; $x++) {
                                     $Field = [MineSweeperField]::new()
                                     $Field.Index = $y * $Columns + $x
+                                    $Field.Type = "0" # Fix to ISE
                 
                                     # Get adjacent indexes
                                     $Field.Neighbors = foreach ($Offset in $FieldOffsets) {
@@ -1720,7 +1721,7 @@
                                     }
                 
                                     # Clicked field is blank -> expand
-                                    if ($Field.Type -eq 0) {
+                                    if ($Field.Type -eq "0") {
                 
                                         $DiscoverQueue = [System.Collections.Generic.Queue[int]]::new()
                                         $DiscoverQueue.Enqueue($Field.Index)
