@@ -5,27 +5,26 @@
 ![PowerShell 7+](https://img.shields.io/badge/PowerShell-7%2B-5391FE?logo=powershell)
 ![Windows](https://img.shields.io/badge/Windows-0078D4?logo=windows11)
 
-A standalone PowerShell function that displays interactive WPF dialog windows - input prompts, selection lists, progress bars, and more...
- 
-Built on a persistent WPF runspace with async support, `Invoke-Interaction` lets you build rich interactive scripts without wrestling with WPF boilerplate.
+A standalone PowerShell function providing WPF dialogs for input prompts, selection lists, progress bars, and more.
 
 ![Invoke-Interaction demo](https://github.com/user-attachments/assets/b9f96701-7d51-4a6c-a3ee-04894907ffd2)
 
-## Features
+## 🎯 Design Philosophy
+
+`Invoke-Interaction` is not a UI framework and is not intended for building full applications or complex forms.
+
+It enhances automation scripts through atomic interactions without UI complexity or boilerplate.
+
+## ✨ Features
  
 - **Multiple built-in interaction types** — text input, item selection, message box, and more
-- **Persistent WPF runspace** — one window instance reused across calls, no flicker
-- **Sync & async modes** — block until the user responds, or get a handle to update the UI and track output while your script keeps running
+- **Persistent WPF runspace** — one window instance reused across calls
+- **Sync & async modes** — wait for user input or update the UI during script execution
 - **Custom interactions** — bring your own XAML, parameter definitions, and UI logic
 - **Built-in modern styles** — consistent look out of the box, fully inheritable in custom interactions
 - **Self-documenting** — [`-Help`](#help) at any level surfaces syntax, parameters, and examples
 
-## Requirements
- 
-- Windows PowerShell 5.1+ or PowerShell 7+ on Windows
-- .NET WPF assemblies (`PresentationFramework`, `PresentationCore`, `WindowsBase`)
-
-## Quick Start
+## 🚀 Quick Start
  
 Install the module from PowerShell Gallery, or copy the standalone function `Invoke-Interaction.ps1` into your project.
 
